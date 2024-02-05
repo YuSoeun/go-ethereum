@@ -333,6 +333,15 @@ func (srv *Server) PeerCount() int {
 	return count
 }
 
+// SetCentralNode는 중앙 노드를 설정합니다.
+func (srv *Server) SetCentralNode(id enode.ID, node map[enode.ID]struct{}) (bool, error) {
+	// Set the central node
+	server.centralNodeID = id
+	server.connectedToCentralNode = node;
+
+	return true, nil
+}
+
 // AddPeer adds the given node to the static node set. When there is room in the peer set,
 // the server will connect to the node. If the connection fails for any reason, the server
 // will attempt to reconnect the peer.

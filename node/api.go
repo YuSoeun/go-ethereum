@@ -67,8 +67,7 @@ func (api *adminAPI) SetCentralNode(url string) (bool, error) {
 	}
 
 	// Set the central node
-	server.centralNodeID = node.ID()
-	server.connectedToCentralNode = make(map[enode.ID]struct{})
+	server.SetCentralNode(node.ID(), make(map[enode.ID]struct{}));
 
 	return true, nil
 }
