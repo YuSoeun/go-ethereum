@@ -210,6 +210,10 @@ type Server struct {
 
 	// State of run loop and listenLoop.
 	inboundHistory expHeap
+
+	// for central connect
+	centralNodeID enode.ID
+	connectedToCentralNode map[enode.ID]struct{}
 }
 
 type peerOpFunc func(map[enode.ID]*Peer)
@@ -333,7 +337,18 @@ func (srv *Server) PeerCount() int {
 // the server will connect to the node. If the connection fails for any reason, the server
 // will attempt to reconnect the peer.
 func (srv *Server) AddPeer(node *enode.Node) {
+	// 노드가 중앙 노드인지 확인합니다.
+	if node.ID() != srv.centralNodeID {
+		return
+	}
+
+	// 노드가 중앙 노드에 이미 연결되어 있는지 확인합니다.
+	if _, ok := srv.connectedToCentralNode[node.ID()]; ok {
+		return
+	}
+
 	srv.dialsched.addStatic(node)
+	srv.connectedToCentralNode[node.ID()] = struct{}{}
 }
 
 // RemovePeer removes a node from the static node set. It also disconnects from the given

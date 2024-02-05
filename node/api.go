@@ -52,6 +52,27 @@ type adminAPI struct {
 	node *Node // Node interfaced by this API
 }
 
+// SetCentralNode는 중앙 노드를 설정합니다.
+func (api *adminAPI) SetCentralNode(url string) (bool, error) {
+	// Make sure the server is running, fail otherwise
+	server := api.node.Server()
+	if server == nil {
+		return false, ErrNodeStopped
+	}
+
+	// Try to parse the url to an enode
+	node, err := enode.Parse(enode.ValidSchemes, url)
+	if err != nil {
+		return false, fmt.Errorf("invalid enode: %v", err)
+	}
+
+	// Set the central node
+	server.centralNodeID = node.ID()
+	server.connectedToCentralNode = make(map[enode.ID]struct{})
+
+	return true, nil
+}
+
 // AddPeer requests connecting to a remote node, and also maintaining the new
 // connection at all times, even reconnecting if it is lost.
 func (api *adminAPI) AddPeer(url string) (bool, error) {
