@@ -336,8 +336,8 @@ func (srv *Server) PeerCount() int {
 // SetCentralNode는 중앙 노드를 설정합니다.
 func (srv *Server) SetCentralNode(id enode.ID, node map[enode.ID]struct{}) (bool, error) {
 	// Set the central node
-	server.centralNodeID = id
-	server.connectedToCentralNode = node;
+	srv.centralNodeID = id
+	srv.connectedToCentralNode = node;
 
 	return true, nil
 }
